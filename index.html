@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#1565C0" />
+    <meta name="description" content="Tic-tac-toe – play against HAL the AI" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Tic-Tac-Toe" />
+    <title>Tic-Tac-Toe</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header id="app-header">
+        <h1 id="app-title">Tic-Tac-Toe</h1>
+      </header>
+
+      <main id="app-main">
+        <div id="status-bar">
+          <span id="status-message">Your turn (X)</span>
+        </div>
+
+        <div id="board" role="grid" aria-label="Tic-Tac-Toe board">
+          <button class="cell" data-index="0" aria-label="Cell 1" role="gridcell"></button>
+          <button class="cell" data-index="1" aria-label="Cell 2" role="gridcell"></button>
+          <button class="cell" data-index="2" aria-label="Cell 3" role="gridcell"></button>
+          <button class="cell" data-index="3" aria-label="Cell 4" role="gridcell"></button>
+          <button class="cell" data-index="4" aria-label="Cell 5" role="gridcell"></button>
+          <button class="cell" data-index="5" aria-label="Cell 6" role="gridcell"></button>
+          <button class="cell" data-index="6" aria-label="Cell 7" role="gridcell"></button>
+          <button class="cell" data-index="7" aria-label="Cell 8" role="gridcell"></button>
+          <button class="cell" data-index="8" aria-label="Cell 9" role="gridcell"></button>
+        </div>
+
+        <div id="score-panel">
+          <div class="score-card" id="score-human">
+            <span class="score-label">You (X)</span>
+            <span class="score-value" id="score-human-val">0</span>
+          </div>
+          <div class="score-card score-card--draw" id="score-draw">
+            <span class="score-label">Draw</span>
+            <span class="score-value" id="score-draw-val">0</span>
+          </div>
+          <div class="score-card score-card--hal" id="score-hal">
+            <span class="score-label">HAL (O)</span>
+            <span class="score-value" id="score-hal-val">0</span>
+          </div>
+        </div>
+
+        <div id="action-bar">
+          <button id="btn-new-game" class="btn btn--primary">New Game</button>
+          <button id="btn-reset-scores" class="btn btn--secondary">Reset Scores</button>
+        </div>
+      </main>
+
+      <!-- Win / Draw overlay -->
+      <div id="overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
+        <div id="overlay-card">
+          <p id="overlay-title" class="overlay-title"></p>
+          <p id="overlay-subtitle" class="overlay-subtitle"></p>
+          <button id="overlay-btn" class="btn btn--primary">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,614 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Tic-Tac-Toe  —  Global + platform-adaptive styles
+   Platforms: [default] | [data-platform="android"] Material Design
+              [data-platform="mac"]     macOS / Aqua
+              [data-platform="windows"] Windows / Fluent
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────── CSS custom properties ────────────────────────── */
+:root {
+  /* Shared geometry */
+  --board-size: min(90vw, 420px);
+  --cell-gap: 8px;
+  --cell-radius: 12px;
+  --overlay-radius: 16px;
+
+  /* Shared timing */
+  --transition-fast: 120ms ease;
+  --transition-med:  220ms ease;
+
+  /* Default / neutral palette */
+  --color-bg:         #f4f4f4;
+  --color-surface:    #ffffff;
+  --color-primary:    #1565C0;
+  --color-primary-dk: #003c8f;
+  --color-secondary:  #546e7a;
+  --color-secondary-dk:#29434e;
+  --color-header-bg:  #1565C0;
+  --color-header-fg:  #ffffff;
+  --color-x:          #c0392b;
+  --color-o:          #2980b9;
+  --color-win:        #27ae60;
+  --color-text:       #212121;
+  --color-text-muted: #757575;
+  --color-border:     #bdbdbd;
+  --color-overlay-bg: rgba(0, 0, 0, .55);
+  --color-score-bg:   #e3f2fd;
+  --shadow-card:      0 2px 8px rgba(0,0,0,.14);
+  --shadow-btn:       0 2px 6px rgba(0,0,0,.20);
+  --font-family:      system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-base:   16px;
+  --header-height:    56px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANDROID — Material Design 3
+   ═══════════════════════════════════════════════════════════════════════════ */
+[data-platform="android"] {
+  --color-bg:         #FFFBFE;
+  --color-surface:    #ffffff;
+  --color-primary:    #6750A4;
+  --color-primary-dk: #4F378B;
+  --color-secondary:  #625B71;
+  --color-secondary-dk:#4A4458;
+  --color-header-bg:  #6750A4;
+  --color-header-fg:  #ffffff;
+  --color-x:          #B3261E;
+  --color-o:          #1565C0;
+  --color-win:        #386A20;
+  --color-text:       #1C1B1F;
+  --color-text-muted: #49454F;
+  --color-border:     #CAC4D0;
+  --color-score-bg:   #EADDff;
+  --shadow-card:      0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.14);
+  --shadow-btn:       0 3px 6px rgba(0,0,0,.16);
+  --cell-radius:      16px;
+  --overlay-radius:   28px;
+  --header-height:    64px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   WINDOWS — Fluent Design / WinUI feel
+   ═══════════════════════════════════════════════════════════════════════════ */
+[data-platform="windows"] {
+  --color-bg:         #f3f3f3;
+  --color-surface:    #ffffff;
+  --color-primary:    #0078d4;
+  --color-primary-dk: #005a9e;
+  --color-secondary:  #605e5c;
+  --color-secondary-dk:#3b3a39;
+  --color-header-bg:  #0078d4;
+  --color-header-fg:  #ffffff;
+  --color-x:          #c50f1f;
+  --color-o:          #0063b1;
+  --color-win:        #107c10;
+  --color-text:       #201f1e;
+  --color-text-muted: #605e5c;
+  --color-border:     #d2d0ce;
+  --color-score-bg:   #deecf9;
+  --shadow-card:      0 2px 4px rgba(0,0,0,.1);
+  --shadow-btn:       none;
+  --cell-radius:      4px;
+  --overlay-radius:   8px;
+  --font-family:      'Segoe UI', system-ui, sans-serif;
+  --header-height:    48px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAC — macOS Aqua / Big Sur feel
+   ═══════════════════════════════════════════════════════════════════════════ */
+[data-platform="mac"] {
+  --color-bg:         #f5f5f7;
+  --color-surface:    rgba(255,255,255,.85);
+  --color-primary:    #0071e3;
+  --color-primary-dk: #0058b0;
+  --color-secondary:  #6e6e73;
+  --color-secondary-dk:#3d3d3f;
+  --color-header-bg:  rgba(242,242,247,.9);
+  --color-header-fg:  #1d1d1f;
+  --color-x:          #ff3b30;
+  --color-o:          #007aff;
+  --color-win:        #34c759;
+  --color-text:       #1d1d1f;
+  --color-text-muted: #6e6e73;
+  --color-border:     #d2d2d7;
+  --color-score-bg:   #f2f2f7;
+  --shadow-card:      0 4px 20px rgba(0,0,0,.1);
+  --shadow-btn:       0 2px 8px rgba(0,0,0,.12);
+  --cell-radius:      14px;
+  --overlay-radius:   18px;
+  --font-family:      -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --header-height:    52px;
+}
+
+/* ─────────────────────────── Reset / base ───────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+/* ─────────────────────────── App shell ──────────────────────────────────── */
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  min-height: 100vh;
+}
+
+/* ─────────────────────────── Header ────────────────────────────────────── */
+#app-header {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-header-bg);
+  color: var(--color-header-fg);
+  box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+#app-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: .5px;
+  user-select: none;
+}
+
+/* macOS — translucent header */
+[data-platform="mac"] #app-header {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+/* Windows — flat header with bottom border */
+[data-platform="windows"] #app-header {
+  box-shadow: none;
+  border-bottom: 2px solid var(--color-primary-dk);
+}
+
+/* ─────────────────────────── Main content ───────────────────────────────── */
+#app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 16px 32px;
+}
+
+/* ─────────────────────────── Status bar ────────────────────────────────── */
+#status-bar {
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#status-message {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  letter-spacing: .2px;
+  transition: color var(--transition-med);
+}
+
+/* ─────────────────────────── Board ─────────────────────────────────────── */
+#board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows:    repeat(3, 1fr);
+  gap: var(--cell-gap);
+  width:  var(--board-size);
+  height: var(--board-size);
+  background-color: var(--color-border);
+  border-radius: calc(var(--cell-radius) + var(--cell-gap));
+  padding: var(--cell-gap);
+  box-shadow: var(--shadow-card);
+}
+
+/* ─────────────────────────── Cells ─────────────────────────────────────── */
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface);
+  border: none;
+  border-radius: var(--cell-radius);
+  font-size: clamp(2rem, 10vw, 4.5rem);
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    transform        var(--transition-fast),
+    box-shadow       var(--transition-fast);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.cell:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  transform: scale(1.04);
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+
+.cell:not(:disabled):active {
+  transform: scale(.96);
+}
+
+.cell:disabled:not(.cell--x):not(.cell--o) {
+  cursor: default;
+}
+
+/* X mark */
+.cell--x {
+  color: var(--color-x);
+  animation: pop-in 180ms cubic-bezier(.175, .885, .32, 1.275) both;
+}
+
+/* O mark */
+.cell--o {
+  color: var(--color-o);
+  animation: pop-in 180ms cubic-bezier(.175, .885, .32, 1.275) both;
+}
+
+/* Win highlight */
+.cell--win {
+  background-color: color-mix(in srgb, var(--color-win) 22%, var(--color-surface));
+  box-shadow: inset 0 0 0 3px var(--color-win);
+  animation: win-pulse 600ms ease-in-out;
+}
+
+/* Android ripple via ::after pseudo */
+[data-platform="android"] .cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--cell-radius);
+  background: radial-gradient(circle, rgba(255,255,255,.6) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  transition: transform 400ms ease, opacity 400ms ease;
+  pointer-events: none;
+}
+[data-platform="android"] .cell:not(:disabled):active::after {
+  opacity: 1;
+  transform: scale(2.5);
+  transition: none;
+}
+
+/* Windows — acrylic blur on surface */
+[data-platform="windows"] .cell {
+  background-color: rgba(255,255,255,.8);
+  backdrop-filter: blur(4px);
+}
+[data-platform="windows"] .cell:not(:disabled):hover {
+  background-color: rgba(0,120,212,.12);
+  transform: none;
+  box-shadow: inset 0 0 0 1px var(--color-primary);
+}
+
+/* macOS — glass-like cells */
+[data-platform="mac"] .cell {
+  background-color: rgba(255,255,255,.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,.08);
+}
+[data-platform="mac"] .cell:not(:disabled):hover {
+  background-color: rgba(255,255,255,.92);
+}
+
+/* ─────────────────────────── Scoreboard ────────────────────────────────── */
+#score-panel {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: var(--board-size);
+}
+
+.score-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  background-color: var(--color-score-bg);
+  border-radius: var(--cell-radius);
+  box-shadow: var(--shadow-card);
+}
+
+.score-label {
+  font-size: .75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--color-text-muted);
+}
+
+.score-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.score-card--draw .score-value { color: var(--color-text-muted); }
+.score-card--hal  .score-value { color: var(--color-o); }
+
+/* ─────────────────────────── Buttons ───────────────────────────────────── */
+#action-bar {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: var(--board-size);
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 16px;
+  font-family: var(--font-family);
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: .3px;
+  border: none;
+  border-radius: var(--cell-radius);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    transform        var(--transition-fast),
+    box-shadow       var(--transition-fast);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.btn--primary {
+  background-color: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+
+.btn--primary:hover {
+  background-color: var(--color-primary-dk);
+  box-shadow: 0 4px 12px rgba(0,0,0,.22);
+}
+
+.btn--secondary {
+  background-color: transparent;
+  color: var(--color-secondary);
+  border: 2px solid var(--color-border);
+}
+
+.btn--secondary:hover {
+  background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+  border-color: var(--color-secondary);
+}
+
+.btn:active { transform: scale(.96); }
+
+/* Android — filled tonal secondary */
+[data-platform="android"] .btn {
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  font-size: .85rem;
+}
+[data-platform="android"] .btn--secondary {
+  background-color: color-mix(in srgb, var(--color-secondary) 12%, transparent);
+  border: none;
+  color: var(--color-secondary-dk);
+}
+
+/* Windows — flat / outlined */
+[data-platform="windows"] .btn {
+  border-radius: 4px;
+}
+[data-platform="windows"] .btn--primary {
+  box-shadow: none;
+}
+[data-platform="windows"] .btn--primary:hover {
+  background-color: var(--color-primary-dk);
+  box-shadow: none;
+}
+[data-platform="windows"] .btn--secondary {
+  background-color: rgba(255,255,255,.7);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+[data-platform="windows"] .btn--secondary:hover {
+  background-color: rgba(0,120,212,.06);
+  border-color: var(--color-primary);
+}
+[data-platform="windows"] .btn:active { transform: none; }
+
+/* macOS — capsule style */
+[data-platform="mac"] .btn {
+  border-radius: 100px;
+}
+[data-platform="mac"] .btn--secondary {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ─────────────────────────── Overlay ────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: fade-in 220ms ease both;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+#overlay-card {
+  background-color: var(--color-surface);
+  border-radius: var(--overlay-radius);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 320px;
+  width: 88vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,.25);
+  animation: slide-up 260ms cubic-bezier(.34,1.56,.64,1) both;
+}
+
+[data-platform="mac"] #overlay-card {
+  background-color: rgba(255,255,255,.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0,0,0,.12);
+}
+
+[data-platform="windows"] #overlay-card {
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.overlay-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-text);
+}
+
+.overlay-subtitle {
+  font-size: .9rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+#overlay-btn {
+  margin-top: 8px;
+  width: 100%;
+  max-width: 200px;
+}
+
+/* ─────────────────────────── Animations ────────────────────────────────── */
+@keyframes pop-in {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes win-pulse {
+  0%   { transform: scale(1);    }
+  35%  { transform: scale(1.08); }
+  65%  { transform: scale(.97);  }
+  100% { transform: scale(1);    }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ─────────────────────────── Focus rings ────────────────────────────────── */
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────── Responsive tweaks ──────────────────────────── */
+@media (max-height: 640px) {
+  #app-main {
+    gap: 12px;
+    padding-top: 12px;
+    padding-bottom: 16px;
+  }
+
+  .score-card { padding: 6px; }
+  .score-value { font-size: 1.2rem; }
+
+  #action-bar .btn { padding: 8px 12px; }
+}
+
+@media (min-width: 600px) {
+  :root { --board-size: 380px; }
+}
+
+@media (min-width: 900px) {
+  :root { --board-size: 420px; }
+}
+
+/* ─────────────────────────── Dark mode support ──────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:        #121212;
+    --color-surface:   #1e1e1e;
+    --color-text:      #e0e0e0;
+    --color-text-muted:#9e9e9e;
+    --color-border:    #373737;
+    --color-score-bg:  #1a2744;
+    --color-overlay-bg:rgba(0,0,0,.70);
+  }
+
+  [data-platform="android"] {
+    --color-bg:        #10091B;
+    --color-surface:   #1C1B1F;
+    --color-text:      #E6E1E5;
+    --color-text-muted:#CAC4D0;
+    --color-border:    #49454F;
+    --color-score-bg:  #2B2039;
+  }
+
+  [data-platform="windows"] {
+    --color-bg:        #202020;
+    --color-surface:   #2d2d2d;
+    --color-text:      #f3f3f3;
+    --color-text-muted:#ababab;
+    --color-border:    #3d3d3d;
+    --color-score-bg:  #1a2e42;
+    --color-header-bg: #1c1c1c;
+    --color-header-fg: #f3f3f3;
+  }
+
+  [data-platform="mac"] {
+    --color-bg:        #1c1c1e;
+    --color-surface:   rgba(44,44,46,.9);
+    --color-text:      #f5f5f7;
+    --color-text-muted:#98989d;
+    --color-border:    #38383a;
+    --color-score-bg:  #2c2c2e;
+    --color-header-bg: rgba(28,28,30,.9);
+    --color-header-fg: #f5f5f7;
+  }
+
+  [data-platform="windows"] .cell {
+    background-color: rgba(45,45,45,.85);
+  }
+}
