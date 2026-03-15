@@ -1,0 +1,70 @@
+{
+    "meta": {
+        "schema": {
+            "spec": {
+                "type": "file",
+                "relative_path": "spec.processed.md",
+                "format": "text",
+                "by_task": "ProcessSpec"
+            },
+            "implemented_change_requests": {
+                "type": "file",
+                "relative_path": "implemented_change_requests.json",
+                "format": "json",
+                "by_task": "FinalizeChangeRequest"
+            },
+            "console_app_dev_command": {
+                "type": "file",
+                "relative_path": "console_app_dev_command.txt",
+                "format": "text",
+                "by_task": "GenerateCliUsageExamples"
+            },
+            "console_app_usage_examples": {
+                "type": "file",
+                "relative_path": "console_app_usage_examples.json",
+                "format": "json",
+                "by_task": "GenerateCliUsageExamples"
+            },
+            "external_apis": {
+                "type": "file",
+                "relative_path": "external_apis.json",
+                "format": "json",
+                "by_task": "AnalyzeExternalApis"
+            },
+            "sha_to_checkpoint": {
+                "type": "file",
+                "relative_path": "sha_to_checkpoint.json",
+                "format": "json"
+            }
+        },
+        "version": "0.2.0"
+    },
+    "phases_state": {
+        "spec_file": "spec/main.cs.md",
+        "spec": ".codespeak/spec.processed.md",
+        "old_spec": "# Tic-tac-toe game\n\nThe app implements a tic-tac-toe a game for 2 players.\nPlayer one is the user normally a  human the second is HAL the computer.\nUse minimax + alpha-beta pruning for HAL responses\nHumans alwway start first.\n\n\n## Look and feel\n\n- Use material UI for Android device\n- Use windows look and feel for windows devices\n- Use Mac look and feel for Mac OS devices\n\n## Technology\n\n- Use pure HTML + JS\n- Use any library that fits the need for css styling\n- Keep css in it's one files, don't mix css with HTML \n- Should be playable in any device\n- Should be PWA app\n- Use docker as container for app\n- Provide that localhost works\n- Provide that test.pwa domain responds with HTTPS, suggest use mkcert, but you are free to choose the a better option ( I will provide the entry in hosts file).\n\n ## Tests\n\n- check that docker is running with the https://test.pws",
+        "spec_diff": "--- +++ @@ -23,6 +23,8 @@ - Provide that localhost works\n - Provide that test.pwa domain responds with HTTPS, suggest use mkcert, but you are free to choose the a better option ( I will provide the entry in hosts file).\n \n- ## Tests\n+## Tests\n \n-- check that docker is running with the https://test.pws+- write a test to verify of  docker is running.\n+- write a test to verify if the domain https://test.pws is responding.\n+- Run all test",
+        "criteria": {
+            "console_application": false,
+            "desktop_application": false,
+            "embedded_application": false,
+            "has_django": false,
+            "has_external_apis": false,
+            "has_go": false,
+            "has_javascript": true,
+            "has_node_js": true,
+            "has_python": false,
+            "has_server": true,
+            "has_social_logins": false,
+            "has_sql_database": false,
+            "library": false,
+            "mobile_application": false,
+            "server": false,
+            "serverless_application": false,
+            "web_application": true
+        },
+        "external_apis": ".codespeak/external_apis.json",
+        "commit_message": "Split tests into two distinct labeled test cases",
+        "methods_to_test": []
+    }
+}

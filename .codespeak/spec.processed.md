@@ -1,7 +1,3 @@
-// This is a comment. This line is ignored.
-// This is an example of a CodeSpeak specification file.
-// Feel free to improve it, experiment wildly, and then run "codespeak build" to see what awesome things happen!
-
 # Tic-tac-toe game
 
 The app implements a tic-tac-toe a game for 2 players.
@@ -32,5 +28,3 @@ Humans alwway start first.
 - write a test to verify of  docker is running.
 - write a test to verify if the domain https://test.pws is responding.
 - Run all test
-
-
