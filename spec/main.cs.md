@@ -31,6 +31,13 @@ Humans alwway start first.
 
 - write a test to verify of  docker is running.
 - write a test to verify if the domain https://test.pwa is responding.
-- Run all test
+- write a test to verify is ssl is ok.
+- write a UI test on tic-tac-toe that responses on localhost
+- write a UI test on tic-tac-toe that responses on https:test.pwa
+
+
+## Run
+
+- Run all tests if fails fix it and run again until the test are ok. 
 
 

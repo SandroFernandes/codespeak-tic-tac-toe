@@ -42,8 +42,8 @@
     "phases_state": {
         "spec_file": "spec/main.cs.md",
         "spec": ".codespeak/spec.processed.md",
-        "old_spec": "# Tic-tac-toe game\n\nThe app implements a tic-tac-toe a game for 2 players.\nPlayer one is the user normally a  human the second is HAL the computer.\nUse minimax + alpha-beta pruning for HAL responses\nHumans alwway start first.\n\n\n## Look and feel\n\n- Use material UI for Android device\n- Use windows look and feel for windows devices\n- Use Mac look and feel for Mac OS devices\n\n## Technology\n\n- Use pure HTML + JS\n- Use any library that fits the need for css styling\n- Keep css in it's one files, don't mix css with HTML \n- Should be playable in any device\n- Should be PWA app\n- Use docker as container for app\n- Provide that localhost works\n- Provide that test.pwa domain responds with HTTPS, suggest use mkcert, but you are free to choose the a better option ( I will provide the entry in hosts file).\n\n ## Tests\n\n- check that docker is running with the https://test.pws",
-        "spec_diff": "--- +++ @@ -23,6 +23,8 @@ - Provide that localhost works\n - Provide that test.pwa domain responds with HTTPS, suggest use mkcert, but you are free to choose the a better option ( I will provide the entry in hosts file).\n \n- ## Tests\n+## Tests\n \n-- check that docker is running with the https://test.pws+- write a test to verify of  docker is running.\n+- write a test to verify if the domain https://test.pws is responding.\n+- Run all test",
+        "old_spec": "# Tic-tac-toe game\n\nThe app implements a tic-tac-toe a game for 2 players.\nPlayer one is the user normally a  human the second is HAL the computer.\nUse minimax + alpha-beta pruning for HAL responses\nHumans alwway start first.\n\n\n## Look and feel\n\n- Use material UI for Android device\n- Use windows look and feel for windows devices\n- Use Mac look and feel for Mac OS devices\n\n## Technology\n\n- Use pure HTML + JS\n- Use any library that fits the need for css styling\n- Keep css in it's one files, don't mix css with HTML \n- Should be playable in any device\n- Should be PWA app\n- Use docker as container for app\n- Provide that localhost works\n- Provide that test.pwa domain responds with HTTPS, suggest use mkcert, but you are free to choose the a better option ( I will provide the entry in hosts file).\n\n## Tests\n\n- write a test to verify of  docker is running.\n- write a test to verify if the domain https://test.pwa is responding.\n- write a test to verify is ssl is ok.\n- write a UI test on tic-tac-toe\n\n\n## Run\n\n- Run all tests if fails fix it and run again until the test are ok.",
+        "spec_diff": "--- +++ @@ -28,7 +28,8 @@ - write a test to verify of  docker is running.\n - write a test to verify if the domain https://test.pwa is responding.\n - write a test to verify is ssl is ok.\n-- write a UI test on tic-tac-toe\n+- write a UI test on tic-tac-toe that responses on localhost\n+- write a UI test on tic-tac-toe that responses on https:test.pwa\n \n \n ## Run\n",
         "criteria": {
             "console_application": false,
             "desktop_application": false,
@@ -64,7 +64,7 @@
             "web_application": true
         },
         "external_apis": ".codespeak/external_apis.json",
-        "commit_message": "Split tests into two distinct labeled test cases",
+        "commit_message": "Add separate UI tests for localhost and https://test.pwa",
         "methods_to_test": []
     }
 }

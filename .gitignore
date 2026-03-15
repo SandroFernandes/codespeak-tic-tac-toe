@@ -215,3 +215,6 @@ __marimo__/
 
 durations.svg
 .codespeak/ignored/
+# Node / UI test dependencies
+node_modules/
+ui-test-deps/node_modules/
