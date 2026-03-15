@@ -3,5 +3,5 @@ services:
     build: .
     ports:
       - "8080:80"    # HTTP — accessible at http://localhost:8080
-      - "8443:443"   # HTTPS — accessible at https://test.pwa:8443
+      - "443:443"    # HTTPS — accessible at https://test.pwa
     restart: unless-stopped

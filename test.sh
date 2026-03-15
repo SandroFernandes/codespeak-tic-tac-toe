@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Tests for tic-tac-toe app
 # Test 1: verify Docker is running
-# Test 2: verify the hosts domain test.pwa responds over HTTPS
+# Test 2: verify the hosts domain test.pwa responds over HTTPS (default 443)
 
 set -uo pipefail
 
@@ -34,11 +34,15 @@ fi
 
 # ── Test 2: test.pwa responds over HTTPS ──────────────────────────────────────
 echo ""
-echo "=== Test 2: Verify test.pwa is responding over HTTPS ==="
+echo "=== Test 2: Verify https://test.pwa is responding ==="
 
 TARGET_HOST="test.pwa"
-TARGET_PORT="${TARGET_PORT:-8443}"
-TARGET_URL="https://${TARGET_HOST}:${TARGET_PORT}"
+TARGET_PORT="${TARGET_PORT:-443}"
+if [ "$TARGET_PORT" -eq 443 ]; then
+  TARGET_URL="https://${TARGET_HOST}"
+else
+  TARGET_URL="https://${TARGET_HOST}:${TARGET_PORT}"
+fi
 HTTP_CODE=$(curl --silent --insecure --max-time 10 --output /dev/null \
   --write-out "%{http_code}" "${TARGET_URL}" 2>/dev/null)
 if ! [[ "$HTTP_CODE" =~ ^[0-9]{3}$ ]]; then
