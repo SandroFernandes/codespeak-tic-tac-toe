@@ -39,6 +39,8 @@ const WIN_LINES = [
 let board       = Array(9).fill(EMPTY);
 let gameActive  = true;
 let scores      = { human: 0, hal: 0, draw: 0 };
+let halMoveTimeoutId = null;
+let overlayTimeoutId = null;
 
 /* ──────────────────────────── DOM refs ─────────────────────────────────── */
 const cells          = Array.from(document.querySelectorAll('.cell'));
@@ -174,6 +176,17 @@ function hideOverlay() {
   overlay.classList.add('hidden');
 }
 
+function clearPendingTimers() {
+  if (halMoveTimeoutId !== null) {
+    clearTimeout(halMoveTimeoutId);
+    halMoveTimeoutId = null;
+  }
+  if (overlayTimeoutId !== null) {
+    clearTimeout(overlayTimeoutId);
+    overlayTimeoutId = null;
+  }
+}
+
 /* ──────────────────────────── Game logic ────────────────────────────────── */
 
 function checkEndState() {
@@ -186,7 +199,11 @@ function checkEndState() {
     updateScoreboard();
     setStatus('You win! 🎉');
     gameActive = false;
-    setTimeout(() => showOverlay('You Win! 🎉', 'Great move, human.'), 400);
+    if (overlayTimeoutId !== null) clearTimeout(overlayTimeoutId);
+    overlayTimeoutId = setTimeout(() => {
+      showOverlay('You Win! 🎉', 'Great move, human.');
+      overlayTimeoutId = null;
+    }, 400);
     return true;
   }
 
@@ -196,7 +213,11 @@ function checkEndState() {
     updateScoreboard();
     setStatus("HAL wins! 🤖");
     gameActive = false;
-    setTimeout(() => showOverlay("HAL Wins! 🤖", "I'm sorry Dave, I'm afraid you lost."), 400);
+    if (overlayTimeoutId !== null) clearTimeout(overlayTimeoutId);
+    overlayTimeoutId = setTimeout(() => {
+      showOverlay("HAL Wins! 🤖", "I'm sorry Dave, I'm afraid you lost.");
+      overlayTimeoutId = null;
+    }, 400);
     return true;
   }
 
@@ -205,7 +226,11 @@ function checkEndState() {
     updateScoreboard();
     setStatus("It's a draw! 🤝");
     gameActive = false;
-    setTimeout(() => showOverlay("It's a Draw! 🤝", 'A perfect game from both sides.'), 400);
+    if (overlayTimeoutId !== null) clearTimeout(overlayTimeoutId);
+    overlayTimeoutId = setTimeout(() => {
+      showOverlay("It's a Draw! 🤝", 'A perfect game from both sides.');
+      overlayTimeoutId = null;
+    }, 400);
     return true;
   }
 
@@ -219,7 +244,11 @@ function halMove() {
   cells.forEach(c => { c.disabled = true; });
 
   // Small delay for UX — makes HAL feel "alive"
-  setTimeout(() => {
+  if (halMoveTimeoutId !== null) clearTimeout(halMoveTimeoutId);
+  halMoveTimeoutId = setTimeout(() => {
+    halMoveTimeoutId = null;
+    if (!gameActive) return;
+
     const idx = bestMove(board);
     if (idx === -1) return; // safety guard
 
@@ -248,6 +277,7 @@ function handleCellClick(event) {
 }
 
 function newGame() {
+  clearPendingTimers();
   board      = Array(9).fill(EMPTY);
   gameActive = true;
 

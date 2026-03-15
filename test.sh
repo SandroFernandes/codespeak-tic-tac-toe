@@ -40,7 +40,10 @@ TARGET_HOST="test.pwa"
 TARGET_PORT="${TARGET_PORT:-8443}"
 TARGET_URL="https://${TARGET_HOST}:${TARGET_PORT}"
 HTTP_CODE=$(curl --silent --insecure --max-time 10 --output /dev/null \
-  --write-out "%{http_code}" "${TARGET_URL}" 2>/dev/null || echo "000")
+  --write-out "%{http_code}" "${TARGET_URL}" 2>/dev/null)
+if ! [[ "$HTTP_CODE" =~ ^[0-9]{3}$ ]]; then
+  HTTP_CODE="000"
+fi
 
 if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 400 ]; then
   run_test "HTTPS domain" 0 "${TARGET_URL} responded with HTTP ${HTTP_CODE}."

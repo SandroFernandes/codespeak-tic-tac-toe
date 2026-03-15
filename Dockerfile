@@ -19,7 +19,7 @@ COPY icons/        /usr/share/nginx/html/icons/
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Generate a self-signed certificate valid for 10 years.
-# The CN and SAN are set to "test.pwa" so browsers trust the cert for that domain.
+# CN/SAN are set to "test.pwa" so hostname validation matches that domain.
 RUN mkdir -p /etc/nginx/ssl && \
     openssl req -x509 -nodes -newkey rsa:2048 \
       -days 3650 \

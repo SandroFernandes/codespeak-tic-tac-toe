@@ -30,7 +30,7 @@ Humans alwway start first.
 ## Tests
 
 - write a test to verify of  docker is running.
-- write a test to verify if the domain https://test.pws is responding.
+- write a test to verify if the domain https://test.pwa is responding.
 - Run all test
 
 
