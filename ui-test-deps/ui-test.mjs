@@ -12,15 +12,12 @@
 import puppeteer from 'puppeteer';
 
 function resolveBaseUrl() {
-  if (process.env.BASE_URL) {
-    return process.env.BASE_URL;
-  }
-  // Legacy fallback
-  const TARGET_PORT = process.env.TARGET_PORT || '443';
-  const TARGET_HOST = process.env.TARGET_HOST || 'test.pwa';
-  return TARGET_PORT === '443'
-    ? `https://${TARGET_HOST}`
-    : `https://${TARGET_HOST}:${TARGET_PORT}`;
+  if (process.env.BASE_URL) return process.env.BASE_URL;
+  // Defaults for HTTP-only local run; override with BASE_URL for Tailscale.
+  const host = process.env.LOCALHOST_HOST || 'localhost';
+  const port = process.env.LOCALHOST_PORT || '8080';
+  const scheme = process.env.SCHEME || 'http';
+  return `${scheme}://${host}${port === '80' ? '' : `:${port}`}`;
 }
 
 const baseUrl = resolveBaseUrl();

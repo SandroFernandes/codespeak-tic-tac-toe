@@ -24,20 +24,17 @@ Humans alwway start first.
 - Should be playable in any device
 - Should be PWA app
 - Use docker as container for app
-- Provide that localhost works
-- Provide that test.pwa domain responds with HTTPS, suggest use mkcert, but you are free to choose the a better option ( I will provide the entry in hosts file).
+- Provide that localhost works on `http://localhost:8080`
+- No custom HTTPS or local domain is required; we will expose/share via Tailscale Tunnel (or Serve/Funnel). The container serves HTTP only.
 
 ## Tests
 
-- write a test to verify of  docker is running.
-- write a test to verify if the domain https://test.pwa is responding.
-- write a test to verify is ssl is ok.
-- write a UI test on tic-tac-toe that responses on localhost
-- write a UI test on tic-tac-toe that responses on https:test.pwa
+- write a test to verify if docker is running.
+- write a test to verify the HTTP endpoint responds (default `http://localhost:8080`, or `BASE_URL` if provided — e.g., a Tailscale URL).
+- write a UI test on tic-tac-toe that responds on the chosen base URL (`BASE_URL`), and also on localhost when different.
 
 
 ## Run
 
-- Run all tests if fails fix it and run again until the test are ok. 
-
+- Run all tests; if any fail, fix and re-run until all tests are ok.
 
