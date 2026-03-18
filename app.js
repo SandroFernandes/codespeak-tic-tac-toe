@@ -80,6 +80,19 @@ function isBoardFull(b) {
 }
 
 /**
+ * Check if a player still has at least one winnable line (i.e., a 3-in-a-row
+ * line that does not yet contain the opponent's mark). Useful for early-draw
+ * detection when all lines are blocked by mixed X/O before the board is full.
+ * @param {Array} b
+ * @param {string} player
+ * @returns {boolean}
+ */
+function hasWinnableLine(b, player) {
+  const opponent = player === HUMAN ? HAL : HUMAN;
+  return WIN_LINES.some(line => line.every(i => b[i] !== opponent));
+}
+
+/**
  * Minimax with α-β pruning.
  * @param {Array}   b           - board snapshot
  * @param {boolean} isMaximizing - true when it's HAL's turn
@@ -92,6 +105,8 @@ function minimax(b, isMaximizing, alpha, beta, depth) {
   // Terminal states
   if (getWinLine(b, HAL))   return 10 - depth;
   if (getWinLine(b, HUMAN)) return depth - 10;
+  // Early draw: no side can possibly complete any remaining line
+  if (!hasWinnableLine(b, HAL) && !hasWinnableLine(b, HUMAN)) return 0;
   if (isBoardFull(b))       return 0;
 
   if (isMaximizing) {
@@ -391,6 +406,21 @@ function checkEndState() {
     if (overlayTimeoutId !== null) clearTimeout(overlayTimeoutId);
     overlayTimeoutId = setTimeout(() => {
       showOverlay("HAL Wins! 🤖", "I'm sorry Dave, I'm afraid you lost.");
+      overlayTimeoutId = null;
+    }, 400);
+    return true;
+  }
+
+  // Early draw: no remaining line can be completed by either player
+  if (!hasWinnableLine(board, HAL) && !hasWinnableLine(board, HUMAN)) {
+    scores.draw++;
+    updateScoreboard();
+    setStatus("It's a draw! 🤝");
+    playEventSound('draw');
+    gameActive = false;
+    if (overlayTimeoutId !== null) clearTimeout(overlayTimeoutId);
+    overlayTimeoutId = setTimeout(() => {
+      showOverlay("It's a Draw! 🤝", 'A perfect game from both sides.');
       overlayTimeoutId = null;
     }, 400);
     return true;
