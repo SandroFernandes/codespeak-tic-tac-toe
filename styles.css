@@ -139,6 +139,11 @@ html, body {
   overscroll-behavior: none;
 }
 
+/* Inline X/O marks inside text */
+.mark-x, .mark-o { font-weight: 700; }
+.mark-x { color: var(--color-x); }
+.mark-o { color: var(--color-o); }
+
 /* ─────────────────────────── App shell ──────────────────────────────────── */
 #app {
   display: flex;

@@ -156,7 +156,10 @@ function highlightWin(line) {
 }
 
 function setStatus(msg) {
-  statusMsg.textContent = msg;
+  const withMarks = msg
+    .replace(/\(X\)/g, '(<span class="mark-x">X</span>)')
+    .replace(/\(O\)/g, '(<span class="mark-o">O</span>)');
+  statusMsg.innerHTML = withMarks;
 }
 
 function updateScoreboard() {
