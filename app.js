@@ -267,10 +267,23 @@ let audioCtx = null;
 
 function updateSoundIcon(enabled) {
   if (!soundIcon || !soundBtn) return;
-  const svgOn = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4h3l4 4V6l-4 4H5Zm11.54 2a4.5 4.5 0 0 0-2.54-4.04v8.08A4.5 4.5 0 0 0 16.54 12Zm-2.54-9a1 1 0 0 1 1 1v1.07a8.5 8.5 0 0 1 0 15.86V22a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1Z"/></svg>';
-  const svgOff= '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4.04v-2A8.5 8.5 0 0 1 18.5 12a8.4 8.4 0 0 1-1.07 4.1l-1.42-1.42A4.5 4.5 0 0 0 16.5 12Zm3.78 8.72-1.41 1.41-3.2-3.2A7.4 7.4 0 0 1 13 20.93V22a1 1 0 0 1-2 0v-6.59l-4-4H5v4h3l4 4v-4.59l-7.72-7.72 1.41-1.41 14.59 14.59ZM12 6l-4 4H5V6h3l4-4v4Z"/></svg>';
+  // Clean, consistent line icons (stroke-based)
+  const svgOn = `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 9v6h3l5 4V5l-5 4H4z" fill="currentColor"/>
+      <path d="M16 9c1.6 1 1.6 5 0 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M19 7c2.8 2.4 2.8 8.6 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
+  const svgOff = `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 9v6h3l5 4V5l-5 4H4z" fill="currentColor"/>
+      <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
   soundIcon.innerHTML = enabled ? svgOn : svgOff;
   soundBtn.setAttribute('aria-pressed', String(enabled));
+  soundBtn.setAttribute('aria-label', enabled ? 'Sound on' : 'Sound off');
+  soundBtn.title = enabled ? 'Sound: On' : 'Sound: Off';
+  soundBtn.classList.toggle('is-muted', !enabled);
 }
 
 function ensureAudioContext() {

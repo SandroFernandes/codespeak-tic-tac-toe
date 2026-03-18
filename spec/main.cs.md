@@ -1,6 +1,7 @@
 // This is a comment. This line is ignored.
 // This is an example of a CodeSpeak specification file.
-// Feel free to improve it, experiment wildly, and then run "codespeak build" to see what awesome things happen!
+// Feel free to improve it, experiment wildly, and then run "codespeak build" 
+// to see what awesome things happen!
 
 # Tic-tac-toe game
 
