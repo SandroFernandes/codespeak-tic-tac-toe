@@ -426,6 +426,37 @@ function checkEndState() {
     return true;
   }
 
+  // If exactly one empty cell remains and the side to move cannot win by
+  // playing it, the result is already a draw and we can stop immediately.
+  {
+    const empties = [];
+    for (let i = 0; i < 9; i++) if (board[i] === EMPTY) empties.push(i);
+    if (empties.length === 1) {
+      const i = empties[0];
+      const humanCount = board.filter(cell => cell === HUMAN).length;
+      const halCount = board.filter(cell => cell === HAL).length;
+      const currentPlayer = humanCount === halCount ? HUMAN : HAL;
+
+      board[i] = currentPlayer;
+      const currentPlayerWins = Boolean(getWinLine(board, currentPlayer));
+      board[i] = EMPTY;
+
+      if (!currentPlayerWins) {
+        scores.draw++;
+        updateScoreboard();
+        setStatus("It's a draw! 🤝");
+        playEventSound('draw');
+        gameActive = false;
+        if (overlayTimeoutId !== null) clearTimeout(overlayTimeoutId);
+        overlayTimeoutId = setTimeout(() => {
+          showOverlay("It's a Draw! 🤝", 'A perfect game from both sides.');
+          overlayTimeoutId = null;
+        }, 400);
+        return true;
+      }
+    }
+  }
+
   if (isBoardFull(board)) {
     scores.draw++;
     updateScoreboard();
@@ -515,6 +546,21 @@ overlayBtn.addEventListener('click', newGame);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    const isLocalDevHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+    if (isLocalDevHost) {
+      navigator.serviceWorker.getRegistrations()
+        .then(registrations => Promise.all(registrations.map(reg => reg.unregister())))
+        .then(() => {
+          if ('caches' in window) {
+            return caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key))));
+          }
+          return null;
+        })
+        .catch(err => console.warn('SW cleanup failed:', err));
+      return;
+    }
+
     navigator.serviceWorker
       .register('./sw.js')
       .catch(err => console.warn('SW registration failed:', err));
