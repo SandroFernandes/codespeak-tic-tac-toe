@@ -354,6 +354,7 @@ function checkEndState() {
     scores.human++;
     updateScoreboard();
     setStatus('You win! 🎉');
+    playEventSound('win-human');
     gameActive = false;
     if (overlayTimeoutId !== null) clearTimeout(overlayTimeoutId);
     overlayTimeoutId = setTimeout(() => {
@@ -368,6 +369,7 @@ function checkEndState() {
     scores.hal++;
     updateScoreboard();
     setStatus("HAL wins! 🤖");
+    playEventSound('win-hal');
     gameActive = false;
     if (overlayTimeoutId !== null) clearTimeout(overlayTimeoutId);
     overlayTimeoutId = setTimeout(() => {
@@ -381,6 +383,7 @@ function checkEndState() {
     scores.draw++;
     updateScoreboard();
     setStatus("It's a draw! 🤝");
+    playEventSound('draw');
     gameActive = false;
     if (overlayTimeoutId !== null) clearTimeout(overlayTimeoutId);
     overlayTimeoutId = setTimeout(() => {
@@ -410,6 +413,7 @@ function halMove() {
 
     board[idx] = HAL;
     renderBoard();
+    playEventSound('hal');
 
     if (!checkEndState()) {
       setStatus('Your turn (X)');
@@ -423,7 +427,8 @@ function halMove() {
 function handleCellClick(event) {
   const idx = parseInt(event.currentTarget.dataset.index, 10);
   if (!gameActive || board[idx] !== EMPTY) return;
-
+  resumeAudioIfNeeded();
+  playEventSound('human');
   board[idx] = HUMAN;
   renderBoard();
 
@@ -492,3 +497,17 @@ if (themeBtn && themeMenu) {
     });
   });
 }
+
+/* ──────────────────────────── Init sound controls ───────────────────────── */
+setSound(getStoredSoundEnabled(), false);
+
+if (soundBtn) {
+  soundBtn.addEventListener('click', () => {
+    setSound(!soundEnabled, true);
+    resumeAudioIfNeeded();
+  });
+}
+
+// Attempt to unlock/resume audio on first user interactions
+document.addEventListener('pointerdown', resumeAudioIfNeeded, { passive: true });
+document.addEventListener('keydown', resumeAudioIfNeeded, { passive: true });
