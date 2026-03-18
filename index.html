@@ -12,12 +12,33 @@
     <link rel="manifest" href="manifest.json" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+    <script>
+      // Apply saved theme early to avoid flash
+      (function () {
+        try {
+          var pref = localStorage.getItem('theme-preference');
+          if (pref === 'light' || pref === 'dark') {
+            document.documentElement.setAttribute('data-theme', pref);
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div id="app">
       <header id="app-header">
         <h1 id="app-title">Tic-Tac-Toe</h1>
+        <button id="theme-button" class="icon-btn" aria-haspopup="true" aria-expanded="false" aria-label="Theme">
+          <span id="theme-icon" aria-hidden="true">🖥️</span>
+        </button>
+        <div id="theme-menu" class="menu" role="menu" aria-labelledby="theme-button">
+          <button role="menuitemradio" class="menu-item" data-theme="system" aria-checked="true">System</button>
+          <button role="menuitemradio" class="menu-item" data-theme="light" aria-checked="false">Light</button>
+          <button role="menuitemradio" class="menu-item" data-theme="dark" aria-checked="false">Dark</button>
+        </div>
       </header>
 
       <main id="app-main">

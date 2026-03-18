@@ -54,6 +54,9 @@ const overlayBtn     = document.getElementById('overlay-btn');
 const scoreHuman     = document.getElementById('score-human-val');
 const scoreHal       = document.getElementById('score-hal-val');
 const scoreDraw      = document.getElementById('score-draw-val');
+const themeBtn       = document.getElementById('theme-button');
+const themeMenu      = document.getElementById('theme-menu');
+const themeIcon      = document.getElementById('theme-icon');
 
 /* ──────────────────────────── Minimax helpers ───────────────────────────── */
 
@@ -190,6 +193,61 @@ function clearPendingTimers() {
   }
 }
 
+/* ──────────────────────────── Theme controls ────────────────────────────── */
+const THEME_KEY = 'theme-preference'; // 'light' | 'dark' | 'system'
+
+function updateThemeButtonIcon(mode) {
+  if (!themeIcon) return;
+  let symbol = '🖥️';
+  if (mode === 'dark') symbol = '🌙';
+  else if (mode === 'light') symbol = '☀️';
+  themeIcon.textContent = symbol;
+}
+
+function updateThemeMenu(mode) {
+  if (!themeMenu) return;
+  const items = themeMenu.querySelectorAll('[data-theme]');
+  items.forEach(btn => {
+    const checked = btn.dataset.theme === mode || (mode === 'system' && btn.dataset.theme === 'system');
+    btn.setAttribute('aria-checked', String(checked));
+  });
+}
+
+function applyTheme(mode, persist = true) {
+  if (mode === 'dark' || mode === 'light') {
+    document.documentElement.setAttribute('data-theme', mode);
+  } else {
+    // system
+    document.documentElement.removeAttribute('data-theme');
+    mode = 'system';
+  }
+  if (persist) {
+    try { localStorage.setItem(THEME_KEY, mode); } catch (e) {}
+  }
+  updateThemeButtonIcon(mode);
+  updateThemeMenu(mode);
+}
+
+function getStoredTheme() {
+  try { return localStorage.getItem(THEME_KEY) || 'system'; } catch (e) { return 'system'; }
+}
+
+function closeThemeMenu() {
+  if (!themeMenu || !themeBtn) return;
+  themeMenu.classList.add('hidden');
+  themeBtn.setAttribute('aria-expanded', 'false');
+}
+
+function toggleThemeMenu() {
+  if (!themeMenu || !themeBtn) return;
+  const isOpen = !themeMenu.classList.contains('hidden');
+  if (isOpen) closeThemeMenu();
+  else {
+    themeMenu.classList.remove('hidden');
+    themeBtn.setAttribute('aria-expanded', 'true');
+  }
+}
+
 /* ──────────────────────────── Game logic ────────────────────────────────── */
 
 function checkEndState() {
@@ -319,3 +377,23 @@ if ('serviceWorker' in navigator) {
 /* ──────────────────────────── Init ─────────────────────────────────────── */
 updateScoreboard();
 renderBoard();
+
+/* ──────────────────────────── Init theme controls ───────────────────────── */
+// Apply stored theme to UI state (document attribute is already set early in head)
+applyTheme(getStoredTheme(), false);
+
+if (themeBtn && themeMenu) {
+  themeBtn.addEventListener('click', toggleThemeMenu);
+  document.addEventListener('click', (e) => {
+    if (!themeMenu.contains(e.target) && e.target !== themeBtn) closeThemeMenu();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeThemeMenu(); });
+
+  themeMenu.querySelectorAll('[data-theme]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.theme;
+      applyTheme(mode, true);
+      closeThemeMenu();
+    });
+  });
+}

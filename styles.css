@@ -188,6 +188,50 @@ html, body {
   border-bottom: 2px solid var(--color-primary-dk);
 }
 
+/* ─────────────────────────── Header actions: theme menu ─────────────────── */
+.icon-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.icon-btn:hover { background: color-mix(in srgb, var(--color-text) 8%, transparent); }
+.icon-btn:active { transform: translateY(-50%) scale(.96); }
+
+.menu.hidden { display: none !important; }
+.menu {
+  position: absolute;
+  right: 8px;
+  top: calc(100% + 8px);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  padding: 6px;
+  min-width: 160px;
+}
+.menu-item {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+}
+.menu-item:hover { background: color-mix(in srgb, var(--color-primary) 12%, transparent); }
+.menu-item[aria-checked="true"] { background: color-mix(in srgb, var(--color-primary) 18%, transparent); }
+
 /* ─────────────────────────── Main content ───────────────────────────────── */
 #app-main {
   flex: 1;
@@ -616,4 +660,122 @@ html, body {
   [data-platform="windows"] .cell {
     background-color: rgba(45,45,45,.85);
   }
+}
+
+/* ─────────────────────────── Theme overrides (explicit) ─────────────────── */
+:root { color-scheme: light dark; }
+:root[data-theme="dark"] { color-scheme: dark; }
+:root[data-theme="light"] { color-scheme: light; }
+
+/* Force dark theme regardless of system setting */
+:root[data-theme="dark"] {
+  --color-bg:        #121212;
+  --color-surface:   #1e1e1e;
+  --color-text:      #e0e0e0;
+  --color-text-muted:#9e9e9e;
+  --color-border:    #373737;
+  --color-score-bg:  #1a2744;
+  --color-overlay-bg:rgba(0,0,0,.70);
+}
+:root[data-theme="dark"][data-platform="android"] {
+  --color-bg:        #10091B;
+  --color-surface:   #1C1B1F;
+  --color-text:      #E6E1E5;
+  --color-text-muted:#CAC4D0;
+  --color-border:    #49454F;
+  --color-score-bg:  #2B2039;
+}
+:root[data-theme="dark"][data-platform="windows"] {
+  --color-bg:        #202020;
+  --color-surface:   #2d2d2d;
+  --color-text:      #f3f3f3;
+  --color-text-muted:#ababab;
+  --color-border:    #3d3d3d;
+  --color-score-bg:  #1a2e42;
+  --color-header-bg: #1c1c1c;
+  --color-header-fg: #f3f3f3;
+}
+:root[data-theme="dark"][data-platform="mac"] {
+  --color-bg:        #1c1c1e;
+  --color-surface:   rgba(44,44,46,.9);
+  --color-text:      #f5f5f7;
+  --color-text-muted:#98989d;
+  --color-border:    #38383a;
+  --color-score-bg:  #2c2c2e;
+  --color-header-bg: rgba(28,28,30,.9);
+  --color-header-fg: #f5f5f7;
+}
+[data-theme="dark"][data-platform="windows"] .cell {
+  background-color: rgba(45,45,45,.85);
+}
+
+/* Force light theme regardless of system setting */
+:root[data-theme="light"] {
+  --color-bg:         #f4f4f4;
+  --color-surface:    #ffffff;
+  --color-primary:    #1565C0;
+  --color-primary-dk: #003c8f;
+  --color-secondary:  #546e7a;
+  --color-secondary-dk:#29434e;
+  --color-header-bg:  #1565C0;
+  --color-header-fg:  #ffffff;
+  --color-x:          #c0392b;
+  --color-o:          #2980b9;
+  --color-win:        #27ae60;
+  --color-text:       #212121;
+  --color-text-muted: #757575;
+  --color-border:     #bdbdbd;
+  --color-score-bg:   #e3f2fd;
+  --color-overlay-bg: rgba(0, 0, 0, .55);
+}
+:root[data-theme="light"][data-platform="android"] {
+  --color-bg:         #FFFBFE;
+  --color-surface:    #ffffff;
+  --color-primary:    #6750A4;
+  --color-primary-dk: #4F378B;
+  --color-secondary:  #625B71;
+  --color-secondary-dk:#4A4458;
+  --color-header-bg:  #6750A4;
+  --color-header-fg:  #ffffff;
+  --color-x:          #B3261E;
+  --color-o:          #1565C0;
+  --color-win:        #386A20;
+  --color-text:       #1C1B1F;
+  --color-text-muted: #49454F;
+  --color-border:     #CAC4D0;
+  --color-score-bg:   #EADDff;
+}
+:root[data-theme="light"][data-platform="windows"] {
+  --color-bg:         #f3f3f3;
+  --color-surface:    #ffffff;
+  --color-primary:    #0078d4;
+  --color-primary-dk: #005a9e;
+  --color-secondary:  #605e5c;
+  --color-secondary-dk:#3b3a39;
+  --color-header-bg:  #0078d4;
+  --color-header-fg:  #ffffff;
+  --color-x:          #c50f1f;
+  --color-o:          #0063b1;
+  --color-win:        #107c10;
+  --color-text:       #201f1e;
+  --color-text-muted: #605e5c;
+  --color-border:     #d2d0ce;
+  --color-score-bg:   #deecf9;
+}
+:root[data-theme="light"][data-platform="mac"] {
+  --color-bg:         #f5f5f7;
+  --color-surface:    rgba(255,255,255,.85);
+  --color-primary:    #0071e3;
+  --color-primary-dk: #0058b0;
+  --color-secondary:  #6e6e73;
+  --color-secondary-dk:#3d3d3f;
+  --color-header-bg:  rgba(242,242,247,.9);
+  --color-header-fg:  #1d1d1f;
+  --color-x:          #ff3b30;
+  --color-o:          #007aff;
+  --color-win:        #34c759;
+  --color-text:       #1d1d1f;
+  --color-text-muted: #6e6e73;
+  --color-border:     #d2d2d7;
+  --color-score-bg:   #f2f2f7;
 }

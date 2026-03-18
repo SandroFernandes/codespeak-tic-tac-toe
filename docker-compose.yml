@@ -1,6 +1,14 @@
 services:
   tic-tac-toe:
     build: .
+    volumes:
+      # Live-reload static assets from the host into the container
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - ./app.js:/usr/share/nginx/html/app.js:ro
+      - ./styles.css:/usr/share/nginx/html/styles.css:ro
+      - ./sw.js:/usr/share/nginx/html/sw.js:ro
+      - ./manifest.json:/usr/share/nginx/html/manifest.json:ro
+      - ./icons:/usr/share/nginx/html/icons:ro
     ports:
       - "8080:80"    # HTTP — accessible at http://localhost:8080 (share via Tailscale)
     restart: unless-stopped
