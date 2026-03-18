@@ -13,14 +13,16 @@
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
     <script>
-      // Apply saved theme early to avoid flash
+      // Apply saved theme early to avoid flash. Default = dark.
       (function () {
         try {
           var pref = localStorage.getItem('theme-preference');
           if (pref === 'light' || pref === 'dark') {
             document.documentElement.setAttribute('data-theme', pref);
-          } else {
+          } else if (pref === 'system') {
             document.documentElement.removeAttribute('data-theme');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
           }
         } catch (e) {}
       })();
@@ -34,10 +36,13 @@
         <button id="theme-button" class="icon-btn" aria-haspopup="true" aria-expanded="false" aria-label="Theme">
           <span id="theme-icon" aria-hidden="true">🖥️</span>
         </button>
-        <div id="theme-menu" class="menu" role="menu" aria-labelledby="theme-button">
-          <button role="menuitemradio" class="menu-item" data-theme="system" aria-checked="true">System</button>
+        <button id="sound-button" class="icon-btn icon-btn--sound" aria-label="Sound" aria-pressed="true">
+          <span id="sound-icon" aria-hidden="true"></span>
+        </button>
+        <div id="theme-menu" class="menu hidden" role="menu" aria-labelledby="theme-button">
+          <button role="menuitemradio" class="menu-item" data-theme="dark" aria-checked="true">Dark</button>
           <button role="menuitemradio" class="menu-item" data-theme="light" aria-checked="false">Light</button>
-          <button role="menuitemradio" class="menu-item" data-theme="dark" aria-checked="false">Dark</button>
+          <button role="menuitemradio" class="menu-item" data-theme="system" aria-checked="false">System</button>
         </div>
       </header>
 

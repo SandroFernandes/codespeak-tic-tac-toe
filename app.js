@@ -57,6 +57,8 @@ const scoreDraw      = document.getElementById('score-draw-val');
 const themeBtn       = document.getElementById('theme-button');
 const themeMenu      = document.getElementById('theme-menu');
 const themeIcon      = document.getElementById('theme-icon');
+const soundBtn       = document.getElementById('sound-button');
+const soundIcon      = document.getElementById('sound-icon');
 
 /* ──────────────────────────── Minimax helpers ───────────────────────────── */
 
@@ -195,13 +197,22 @@ function clearPendingTimers() {
 
 /* ──────────────────────────── Theme controls ────────────────────────────── */
 const THEME_KEY = 'theme-preference'; // 'light' | 'dark' | 'system'
+const SOUND_KEY = 'sound-enabled';     // 'on' | 'off'
 
 function updateThemeButtonIcon(mode) {
   if (!themeIcon) return;
-  let symbol = '🖥️';
-  if (mode === 'dark') symbol = '🌙';
-  else if (mode === 'light') symbol = '☀️';
-  themeIcon.textContent = symbol;
+  const icon = (name) => {
+    switch (name) {
+      case 'dark':
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>';
+      case 'light':
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 4a1 1 0 0 1-1-1v-1.1a1 1 0 1 1 2 0V21a1 1 0 0 1-1 1Zm0-18a1 1 0 0 1-1-1V2.1a1 1 0 1 1 2 0V3a1 1 0 0 1-1 1Zm10 9a1 1 0 0 1-1 1h-1.1a1 1 0 1 1 0-2H21a1 1 0 0 1 1 1ZM4.1 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1.1a1 1 0 0 1 1 1ZM18.36 18.36a1 1 0 0 1-1.41 0l-.78-.78a1 1 0 1 1 1.41-1.41l.78.78a1 1 0 0 1 0 1.41ZM7.83 7.83a1 1 0 0 1-1.41 0l-.78-.78A1 1 0 0 1 7.05 5.6l.78.78a1 1 0 0 1 0 1.41Zm10.53-4.24a1 1 0 0 1 0 1.41l-.78.78a1 1 0 1 1-1.41-1.41l.78-.78a1 1 0 0 1 1.41 0ZM6.22 17.58a1 1 0 1 1-1.41 1.41l-.78-.78a1 1 0 1 1 1.41-1.41l.78.78Z"/></svg>';
+      default:
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8l-4 4V5Zm3 2h10v7H7V7Z"/></svg>';
+    }
+  };
+  const name = mode === 'dark' ? 'dark' : mode === 'light' ? 'light' : 'system';
+  themeIcon.innerHTML = icon(name);
 }
 
 function updateThemeMenu(mode) {
@@ -229,7 +240,7 @@ function applyTheme(mode, persist = true) {
 }
 
 function getStoredTheme() {
-  try { return localStorage.getItem(THEME_KEY) || 'system'; } catch (e) { return 'system'; }
+  try { return localStorage.getItem(THEME_KEY) || 'dark'; } catch (e) { return 'dark'; }
 }
 
 function closeThemeMenu() {
@@ -249,6 +260,90 @@ function toggleThemeMenu() {
 }
 
 /* ──────────────────────────── Game logic ────────────────────────────────── */
+
+/* ──────────────────────────── Sound controls ────────────────────────────── */
+let soundEnabled = true;
+let audioCtx = null;
+
+function updateSoundIcon(enabled) {
+  if (!soundIcon || !soundBtn) return;
+  const svgOn = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4h3l4 4V6l-4 4H5Zm11.54 2a4.5 4.5 0 0 0-2.54-4.04v8.08A4.5 4.5 0 0 0 16.54 12Zm-2.54-9a1 1 0 0 1 1 1v1.07a8.5 8.5 0 0 1 0 15.86V22a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1Z"/></svg>';
+  const svgOff= '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4.04v-2A8.5 8.5 0 0 1 18.5 12a8.4 8.4 0 0 1-1.07 4.1l-1.42-1.42A4.5 4.5 0 0 0 16.5 12Zm3.78 8.72-1.41 1.41-3.2-3.2A7.4 7.4 0 0 1 13 20.93V22a1 1 0 0 1-2 0v-6.59l-4-4H5v4h3l4 4v-4.59l-7.72-7.72 1.41-1.41 14.59 14.59ZM12 6l-4 4H5V6h3l4-4v4Z"/></svg>';
+  soundIcon.innerHTML = enabled ? svgOn : svgOff;
+  soundBtn.setAttribute('aria-pressed', String(enabled));
+}
+
+function ensureAudioContext() {
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) audioCtx = new AC();
+  }
+  return audioCtx;
+}
+
+async function resumeAudioIfNeeded() {
+  const ctx = ensureAudioContext();
+  if (ctx && ctx.state === 'suspended') {
+    try { await ctx.resume(); } catch (e) {}
+  }
+}
+
+function setSound(enabled, persist = true) {
+  soundEnabled = !!enabled;
+  updateSoundIcon(soundEnabled);
+  if (persist) {
+    try { localStorage.setItem(SOUND_KEY, soundEnabled ? 'on' : 'off'); } catch (e) {}
+  }
+  if (soundEnabled) ensureAudioContext();
+}
+
+function getStoredSoundEnabled() {
+  try {
+    const v = localStorage.getItem(SOUND_KEY);
+    return v === null ? true : v === 'on';
+  } catch (e) {
+    return true;
+  }
+}
+
+function beep(freq = 440, durationMs = 120, volume = 0.04, type = 'sine') {
+  if (!soundEnabled) return;
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const t0 = ctx.currentTime + 0.01;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  gain.gain.value = volume;
+  osc.type = type;
+  osc.frequency.value = freq;
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0 + durationMs / 1000);
+}
+
+function playEventSound(kind) {
+  if (!soundEnabled) return;
+  // Simple palette of sounds per event
+  switch (kind) {
+    case 'human':
+      beep(660, 110, 0.045, 'sine');
+      break;
+    case 'hal':
+      beep(440, 110, 0.045, 'sine');
+      break;
+    case 'win-human':
+      beep(880, 160, 0.05, 'sine');
+      setTimeout(() => beep(1175, 160, 0.05, 'sine'), 140);
+      break;
+    case 'win-hal':
+      beep(392, 160, 0.05, 'sine');
+      setTimeout(() => beep(523, 160, 0.05, 'sine'), 140);
+      break;
+    case 'draw':
+      beep(330, 160, 0.045, 'triangle');
+      break;
+  }
+}
 
 function checkEndState() {
   const humanWin = getWinLine(board, HUMAN);
@@ -385,7 +480,7 @@ applyTheme(getStoredTheme(), false);
 if (themeBtn && themeMenu) {
   themeBtn.addEventListener('click', toggleThemeMenu);
   document.addEventListener('click', (e) => {
-    if (!themeMenu.contains(e.target) && e.target !== themeBtn) closeThemeMenu();
+    if (!themeMenu.contains(e.target) && !themeBtn.contains(e.target)) closeThemeMenu();
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeThemeMenu(); });
 
