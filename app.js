@@ -213,6 +213,11 @@ function updateThemeButtonIcon(mode) {
   };
   const name = mode === 'dark' ? 'dark' : mode === 'light' ? 'light' : 'system';
   themeIcon.innerHTML = icon(name);
+  if (themeBtn) {
+    const label = name === 'dark' ? 'Theme: Dark' : name === 'light' ? 'Theme: Light' : 'Theme: System';
+    themeBtn.title = label;
+    themeBtn.setAttribute('aria-label', label);
+  }
 }
 
 function updateThemeMenu(mode) {
@@ -267,7 +272,7 @@ let audioCtx = null;
 
 function updateSoundIcon(enabled) {
   if (!soundIcon || !soundBtn) return;
-  // Clean, consistent line icons (stroke-based)
+  // Clean, consistent icons; Off = speaker only (no waves, no slash)
   const svgOn = `
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M4 9v6h3l5 4V5l-5 4H4z" fill="currentColor"/>
@@ -277,7 +282,6 @@ function updateSoundIcon(enabled) {
   const svgOff = `
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M4 9v6h3l5 4V5l-5 4H4z" fill="currentColor"/>
-      <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </svg>`;
   soundIcon.innerHTML = enabled ? svgOn : svgOff;
   soundBtn.setAttribute('aria-pressed', String(enabled));

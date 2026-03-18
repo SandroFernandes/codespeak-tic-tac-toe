@@ -219,6 +219,9 @@ html, body {
 #theme-icon { pointer-events: none; }
 #sound-icon { pointer-events: none; }
 
+/* Ensure theme icon uses header text color for proper contrast */
+#theme-icon svg { fill: currentColor; }
+
 .menu.hidden { display: none !important; }
 .menu {
   position: absolute;
