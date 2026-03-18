@@ -535,6 +535,31 @@ function resetScores() {
   updateScoreboard();
 }
 
+function setBoardStateForTest(nextBoard, nextScores = scores) {
+  clearPendingTimers();
+  board = nextBoard.slice();
+  scores = { ...nextScores };
+  gameActive = true;
+
+  cells.forEach(cell => {
+    cell.classList.remove('cell--win', 'cell--x', 'cell--o');
+  });
+
+  hideOverlay();
+  updateScoreboard();
+  renderBoard();
+
+  if (!checkEndState()) {
+    const humanCount = board.filter(cell => cell === HUMAN).length;
+    const halCount = board.filter(cell => cell === HAL).length;
+    const isHumanTurn = humanCount === halCount;
+    setStatus(isHumanTurn ? 'Your turn (X)' : 'HAL is thinking…');
+    cells.forEach((cell, i) => {
+      cell.disabled = board[i] !== EMPTY || !gameActive || !isHumanTurn;
+    });
+  }
+}
+
 /* ──────────────────────────── Event listeners ───────────────────────────── */
 
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
@@ -566,6 +591,21 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.warn('SW registration failed:', err));
   });
 }
+
+window.__ticTacToeTest = {
+  setBoardState(nextBoard, nextScores) {
+    setBoardStateForTest(nextBoard, nextScores);
+  },
+  getState() {
+    return {
+      board: board.slice(),
+      gameActive,
+      scores: { ...scores },
+      status: statusMsg.textContent.trim(),
+      overlayHidden: overlay.classList.contains('hidden'),
+    };
+  },
+};
 
 /* ──────────────────────────── Init ─────────────────────────────────────── */
 updateScoreboard();

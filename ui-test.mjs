@@ -35,6 +35,12 @@ function notOk(name, msg) {
   fail++;
 }
 
+async function setBoardState(page, board, scores = { human: 0, hal: 0, draw: 0 }) {
+  await page.evaluate(({ boardState, scoreState }) => {
+    window.__ticTacToeTest.setBoardState(boardState, scoreState);
+  }, { boardState: board, scoreState: scores });
+}
+
 async function runTests() {
   const browser = await puppeteer.launch({
     headless: true,
@@ -183,6 +189,49 @@ async function runTests() {
       ok('UI: HAL places O', 'HAL placed O in response to human move.');
     } catch (e) {
       notOk('UI: gameplay (X then O)', `Error during gameplay: ${e.message}`);
+    }
+
+    // ── UI Test 9: one-cell-left forced draw shows immediately ─────────────
+    try {
+      await setBoardState(page, [
+        'X', 'O', 'X',
+        null, 'O', 'O',
+        'O', 'X', 'X',
+      ]);
+
+      await page.waitForFunction(
+        () => !document.getElementById('overlay').classList.contains('hidden'),
+        { timeout: 1500 }
+      );
+
+      const state = await page.evaluate(() => window.__ticTacToeTest.getState());
+      if (/draw/i.test(state.status) && state.scores.draw === 1 && state.gameActive === false) {
+        ok('UI: forced draw popup', 'Forced one-cell-left draw is detected before the final click.');
+      } else {
+        notOk('UI: forced draw popup', `Unexpected draw state: ${JSON.stringify(state)}.`);
+      }
+    } catch (e) {
+      notOk('UI: forced draw popup', `Error validating forced draw: ${e.message}`);
+    }
+
+    // ── UI Test 10: drawable position does not end too early ───────────────
+    try {
+      await setBoardState(page, [
+        'O', 'X', 'O',
+        null, 'X', null,
+        null, 'O', 'X',
+      ]);
+
+      await new Promise(r => setTimeout(r, 500));
+
+      const state = await page.evaluate(() => window.__ticTacToeTest.getState());
+      if (state.overlayHidden && state.gameActive === true && /your turn/i.test(state.status)) {
+        ok('UI: no premature draw', 'Position with future play available stays active.');
+      } else {
+        notOk('UI: no premature draw', `Game ended too early: ${JSON.stringify(state)}.`);
+      }
+    } catch (e) {
+      notOk('UI: no premature draw', `Error validating non-terminal drawish position: ${e.message}`);
     }
 
   } finally {
